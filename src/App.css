@@ -1,0 +1,98 @@
+* {
+  margin: 0;
+}
+
+body {
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+h1 {
+  margin: 0px 0px 10px 0px;
+}
+
+.countrySelect {
+  border-radius: 6px;
+  outline: none;
+  font-weight: 400;
+  width: 350px;
+  height: 50px;
+  font-size: 15px;
+}
+
+.coronaStats {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.titleCases {
+  margin: 10px;
+}
+
+.caseBox {
+  margin: 50px 0px 0px 0px;
+}
+.caseBoxCard {
+  border: 2px solid red;
+  border-radius: 8px;
+  text-align: center;
+  width: 200px;
+  height: 100px;
+}
+
+.box {
+  display: flex;
+  justify-content: center;
+}
+
+.countryName {
+  flex: 0.5;
+}
+
+.sr {
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.allCountries {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+@media screen and (max-width: 480px) {
+  body {
+    background-color: lightgreen;
+  }
+
+  .header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .countrySelect {
+    width: auto;
+  }
+
+  .coronaStats {
+    display: block;
+  }
+
+  .caseBoxCard {
+    width: auto;
+    height: 100px;
+  }
+
+  .sr {
+    display: flex;
+    height: 60px;
+    text-align: center;
+    margin: 10px;
+  }
+}
