@@ -4,7 +4,7 @@ import numeral from "numeral";
 
 const options = {
   legend: {
-    display: true,
+    display: false,
   },
   elements: {
     point: {
@@ -47,12 +47,12 @@ const options = {
   },
 };
 
-const buildChart = (data, casesType = "cases") => {
-  const chartData = [];
+const buildChartData = (data, casesType = "cases") => {
+  let chartData = [];
   let lastDataPoint;
   for (let date in data.cases) {
     if (lastDataPoint) {
-      const newDataPoint = {
+      let newDataPoint = {
         x: date,
         y: data[casesType][date] - lastDataPoint,
       };
@@ -63,18 +63,20 @@ const buildChart = (data, casesType = "cases") => {
   return chartData;
 };
 
-function Graph() {
+function LineGraph() {
   const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
-        .then((response) => response.json())
+        .then((response) => {
+          return response.json();
+        })
         .then((data) => {
-          console.log(data);
-          let chartData = buildChart(data, "cases");
+          let chartData = buildChartData(data, "cases");
           setData(chartData);
           console.log(chartData);
+          // buildChart(chartData);
         });
     };
 
@@ -82,22 +84,23 @@ function Graph() {
   }, []);
 
   return (
-    <div>
-      <h1> Graph</h1>
+    <div className="LineGraph">
       {data?.length > 0 && (
         <Line
-          options={options}
           data={{
             datasets: [
               {
+                backgroundColor: "rgba(204, 16, 52, 0.5)",
+                borderColor: "#CC1034",
                 data: data,
               },
             ],
           }}
+          options={options}
         />
       )}
     </div>
   );
 }
 
-export default Graph;
+export default LineGraph;

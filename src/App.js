@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import Corona from "./Corona";
 import Graph from "./Graph";
 import "./App.css";
+import Table from "./Table";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState();
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -25,11 +27,27 @@ function App() {
             name: country.country,
             value: country.countryInfo.iso2,
           }));
+
+          const sortedData = sortData(data);
+          setTableData(sortedData);
           setCountries(countries);
         });
     };
     getCountries();
   }, []);
+
+  const sortData = (data) => {
+    const sortedData = [...data];
+
+    sortedData.sort((a, b) => {
+      if (a.cases > b.cases) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    return sortedData;
+  };
 
   const countryChange = async (event) => {
     const countryCode = event.target.value;
@@ -54,7 +72,9 @@ function App() {
   return (
     <div className="app">
       <div className="header">
-        <h1>COVID-19 Tracker</h1>
+        <h1>
+          <span>COVID-19</span> Tracker
+        </h1>
         <select
           onChange={countryChange}
           value={country}
@@ -66,6 +86,7 @@ function App() {
           ))}
         </select>
       </div>
+      <p className="case-list"> Dashboard</p>
       <div className="coronaStats">
         <Corona title="Coronavirus cases" total={countryInfo.cases} />
         <Corona title="Recovered" total={countryInfo.recovered} />
@@ -73,6 +94,11 @@ function App() {
         <Corona title="Deaths" total={countryInfo.deaths} />
       </div>
 
+      <p className="case-list">Cases by Country</p>
+
+      <Table countries={tableData} />
+
+      <p className="case-list">Worldwide new cases</p>
       <div className="graph">
         <Graph />
       </div>
