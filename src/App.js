@@ -10,6 +10,14 @@ function App() {
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
 
+  const options = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "e1072a2a5cmshba58d5d8b2dff58p1abf1bjsn0c8b55ef9231",
+      "X-RapidAPI-Host": "covid-193.p.rapidapi.com",
+    },
+  };
+
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
       .then((response) => response.json())
@@ -20,15 +28,17 @@ function App() {
 
   useEffect(() => {
     const getCountries = async () => {
-      await fetch("https://corona.lmao.ninja/v2/countries?yesterday&sort")
+      await fetch("https://covid-193.p.rapidapi.com/statistics", options)
         .then((response) => response.json())
         .then((data) => {
-          const countries = data.map((country) => ({
-            name: country.country,
-            value: country.countryInfo.iso2,
-          }));
+          const countries = data.response
+            .map((country) => ({
+              name: country.country,
+              value: country.country,
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name));
 
-          const sortedData = sortData(data);
+          const sortedData = sortData(data.response);
           setTableData(sortedData);
           setCountries(countries);
         });
@@ -40,7 +50,7 @@ function App() {
     const sortedData = [...data];
 
     sortedData.sort((a, b) => {
-      if (a.cases > b.cases) {
+      if (a.cases.active > b.cases.active) {
         return -1;
       } else {
         return 1;
@@ -52,22 +62,29 @@ function App() {
   const countryChange = async (event) => {
     const countryCode = event.target.value;
 
-    console.log(countryCode);
+    if (countryCode === "worldwide") {
+      await fetch("https://disease.sh/v3/covid-19/all")
+        .then((response) => response.json())
+        .then((data) => {
+          setCountry(countryCode);
+          setCountryInfo(data);
+        });
+    } else {
+      const countryResult = tableData.filter(
+        (data) => countryCode === data.country
+      )[0];
 
-    const url =
-      countryCode === "worldwide"
-        ? "https://disease.sh/v3/covid-19/all"
-        : `https://corona.lmao.ninja/v2/countries/${countryCode}`;
-
-    await fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setCountry(countryCode);
-        setCountryInfo(data);
+      setCountry(countryCode);
+      setCountryInfo({
+        cases: countryResult.cases.total,
+        recovered: countryResult.cases.recovered,
+        active: countryResult.cases.active,
+        deaths: countryResult.deaths.total,
       });
+    }
   };
 
-  console.log("country info >>>", countryInfo);
+  // console.log("country info >>>", countryInfo);
 
   return (
     <div className="app">

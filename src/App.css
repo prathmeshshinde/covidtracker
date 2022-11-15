@@ -61,6 +61,10 @@ select {
   height: 100px;
 }
 
+.tableform {
+  width: 100%;
+}
+
 .box {
   display: flex;
   justify-content: center;
