@@ -10,14 +10,6 @@ function App() {
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
 
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "e1072a2a5cmshba58d5d8b2dff58p1abf1bjsn0c8b55ef9231",
-      "X-RapidAPI-Host": "covid-193.p.rapidapi.com",
-    },
-  };
-
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
       .then((response) => response.json())
@@ -28,7 +20,14 @@ function App() {
 
   useEffect(() => {
     const getCountries = async () => {
-      await fetch("https://covid-193.p.rapidapi.com/statistics", options)
+      await fetch("https://covid-193.p.rapidapi.com/statistics", {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key":
+            "e1072a2a5cmshba58d5d8b2dff58p1abf1bjsn0c8b55ef9231",
+          "X-RapidAPI-Host": "covid-193.p.rapidapi.com",
+        },
+      })
         .then((response) => response.json())
         .then((data) => {
           const countries = data.response
